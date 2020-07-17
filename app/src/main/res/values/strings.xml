@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">LoginTask</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="company">COMPANY</string>
+    <string name="notification_filter_id">NOTIFICATION FILTER ID</string>
+    <string name="employee_name">EMPLOYEE NAME</string>
+</resources>
