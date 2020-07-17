@@ -3,12 +3,12 @@ package com.harry.example.logintask.ui
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.harry.example.logintask.R
@@ -16,13 +16,10 @@ import com.harry.example.logintask.databinding.LoginActivityBinding
 import com.harry.example.logintask.pojos.ApiResponse
 import com.harry.example.logintask.utility.*
 import com.harry.example.logintask.viewmodels.LoginViewModel
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -30,12 +27,13 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class LoginActivity : AppCompatActivity() {
     private val loginViewModel: LoginViewModel by viewModel()
     private val networkConnectionChecker: NetworkConnectionChecker by inject()
-    private var isNetworkAvailable: Boolean = false;
+    private var isNetworkAvailable: Boolean = false
     private var isLoggingUser: Boolean = false
-    private var credentialsStored = false;
-    private var rememberMeIsChecked: Boolean = false;
+    private var credentialsStored = false
+    private var rememberMeIsChecked: Boolean = false
     private var username: String? = null
     private var password: String? = null
+
 
     private lateinit var loginActivityBinding: LoginActivityBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,21 +59,21 @@ class LoginActivity : AppCompatActivity() {
         loginActivityBinding.rememberMe.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 rememberMeIsChecked = true
-                username = loginActivityBinding.username.text.toString().trim()
-                password = loginActivityBinding.password.text.toString().trim()
+            } else {
+                rememberMeIsChecked = false
             }
         }
     }
 
 
     fun loginUser() {
-        val username = loginActivityBinding.username.text.toString().trim()
-        val password = loginActivityBinding.password.text.toString().trim()
-        if (username.isEmpty() || username.isBlank()) {
+        username = loginActivityBinding.username.text.toString().trim()
+        password = loginActivityBinding.password.text.toString().trim()
+        if (username.isNullOrEmpty() || username.isNullOrBlank()) {
             loginActivityBinding.inputLayoutUsername.error = CANNOT_BE_EMPTY
             return
         }
-        if (password.isEmpty() || password.isBlank()) {
+        if (password.isNullOrEmpty() || password.isNullOrBlank()) {
             loginActivityBinding.inputLayoutPassword.error = CANNOT_BE_EMPTY
             return
         }
@@ -143,6 +141,7 @@ class LoginActivity : AppCompatActivity() {
             if (it?.data != null) {
                 clearViews()
                 if (rememberMeIsChecked) {
+                    Log.i("TAG", "STORED")
                     storeCredentials(username, password)
                 }
                 toHomeActivity(it)
@@ -178,6 +177,7 @@ class LoginActivity : AppCompatActivity() {
                 val sharedPreferences: SharedPreferences =
                     getSharedPreferences(USER_CREDENTIALS, Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
+                Log.i("TAG", "storeCredentials: ${username} ${password}")
                 editor.putString(USERNAME, username)
                 editor.putString(PASSWORD, password)
                 editor.apply()
